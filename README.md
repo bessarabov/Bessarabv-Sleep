@@ -1,6 +1,6 @@
-# Perl module Bessarabv::Weight
+# Perl module Bessarabv::Sleep
 
-The source code for Perl module Bessarabv::Weight is avaliable on
+The source code for Perl module Bessarabv::Sleep is avaliable on
 [GitHub][gh].
 
 The compiled and ready to use version of this module is avaliable on
@@ -11,6 +11,6 @@ Issues][ghi].
 
 Or you can always write me email to ivan@bessarabov.ru
 
- [gh]: https://github.com/bessarabov/Bessarabv-Weight
- [cpan]: https://metacpan.org/module/Bessarabv::Weight
- [ghi]: https://github.com/bessarabov/Bessarabv-Weight/issues
+ [gh]: https://github.com/bessarabov/Bessarabv-Sleep
+ [cpan]: https://metacpan.org/module/Bessarabv::Sleep
+ [ghi]: https://github.com/bessarabov/Bessarabv-Sleep/issues

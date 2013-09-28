@@ -1,33 +1,40 @@
-package Bessarabv::Weight;
+package Bessarabv::Sleep;
 
-# ABSTRACT: get Ivan Bessarabov's weight data
+# ABSTRACT: get Ivan Bessarabov's sleep data
 
 =head1 SYNOPSIS
 
-    use Bessarabv::Weight;
+    use Bessarabv::Sleep;
 
-    my $bw = Bessarabv::Weight->new();
+    my $bs = Bessarabv::Sleep->new();
 
-    print $bw->get_weight("2013-08-21") # 82.2
+    print $bs->get_sleep_hours("2013-09-27"); # 8.06
 
 =head1 DESCRIPTION
 
 My name is Ivan Bessarabov and I'm a lifelogger. Well, actually I don't record
 all of my life, but I do records of some parts of my life.
 
-One of the thing that I measure is my weight. I use super pretty iPhone App
-L<Weightbot|http://tapbots.com/software/weightbot/>. I've created Perl module
-L<Weightbot::API> to get data from that App. I use that module to download my
-weight data and to draw L<graph|http://ivan.bessarabov.ru/weight>.
+One of the thing that I measure is my sleep. Every time I go to sleep I record
+that time in a text file. And when I get up I also record that time. I have a
+simple system that parses that text file and sotores that sleep data somewhere
+in the cloud.
 
-This module is a very simple Perl API to get info about my weight that is
-stored somewhere in the cloud. I sometimes play with this numbers, so I have
-releases this module to make things easy. Not sure if someone else will need
-this module, but there is no secret here and that's why I've released it on
-CPAN, but not on my DarkPAN.
+This module is a very simple Perl API to get my sleep time data from the
+cloud. I sometimes play with this numbers, so I have releases this module to
+make things easy. Not sure if someone else will need this module, but there is
+no secret here and that's why I've released it on CPAN, but not on my DarkPAN.
 
-Bessarabv::Weight uses Semantic Versioning standart for version numbers.
+Bessarabv::Sleep uses Semantic Versioning standart for version numbers.
 Please visit L<http://semver.org/> to find out all about this great thing.
+
+=head1 SEE ALSO
+
+=over
+
+=item * L<Bessarabv::Weight>
+
+=back
 
 =cut
 
@@ -52,7 +59,7 @@ This constructor downloads data from the cloud and stores it in the object.
 There is only one interaction with the cloud. After the new() is completed no
 interactions with the cloud is done.
 
-    my $bw = Bessarabv::Weight->new();
+    my $bs = Bessarabv::Sleep->new();
 
 =cut
 
@@ -69,18 +76,18 @@ sub new {
     return $self;
 }
 
-=head2 has_weight
+=head2 has_sleep_data
 
-If there is weight data for the given date it returns true value. Othervise i
+If there is sleep data for the given date it returns true value. Othervise it
 returns false value. It should recieve date in the format YYYY-MM-DD. In case
 the date is incorrect this method will die.
 
-    $bw->has_weight("2013-08-11");  # false
-    $bw->has_weight("2013-08-20");  # true
+    $bs->has_sleep_data("2013-09-15");  # false
+    $bs->has_sleep_data("2013-09-27");  # true
 
 =cut
 
-sub has_weight {
+sub has_sleep_data {
     my ($self, $date) = @_;
 
     $self->__die_if_date_is_incorrect($date);
@@ -92,40 +99,41 @@ sub has_weight {
     }
 }
 
-=head2 get_weight
+=head2 get_sleep_hours
 
-Returns my weight in kilograms for the given date. In case the date is
+Returns my sleep in kilograms for the given date. In case the date is
 incorrect the method dies. The method dies if there is no value for the
 specified date.
 
-    $bw->get_weight("2013-08-10");  # 80.8
-    $bw->get_weight("2013-08-11");  # Boom! Script dies here because there is
-                                    # no value. Use has_weight() to check.
+
+    $bs->get_sleep_hours("2013-09-27");  # 8.06
+    $bs->get_sleep_hours("2013-09-15");  # Boom! Script dies here because
+                        # there is no value. Use has_sleep_data() to check.
 
 =cut
 
-sub get_weight {
+sub get_sleep_hours {
     my ($self, $date) = @_;
 
-    if ($self->has_weight($date)) {
+    if ($self->has_sleep_data($date)) {
         return $self->{__data}->{$date};
     } else {
         $date = '' if not defined $date;
-        croak "There is no weight info for the date '$date'";
+        croak "There is no sleep info for the date '$date'";
     }
 }
 
 sub __get_data {
     my ($self) = @_;
 
-    my $json = get("http://ivan.bessarabov.ru/weight.json");
+    my $json = get("http://ivan.bessarabov.ru/sleep.json");
     my $data = from_json($json);
 
     my $day_data = $data->[0]->{day};
 
-    my %date2weight = map { $_->{label} => $_->{min_value} } @{ $day_data };
+    my %date2sleep = map { $_->{label} => $_->{min_value} } @{ $day_data };
 
-    $self->{__data} =  \%date2weight;
+    $self->{__data} =  \%date2sleep;
 
     return $false;
 }
